@@ -11,7 +11,7 @@ metadata:
     app.openshift.io/runtime: java
   name: spring-petclinic
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: spring-petclinic
@@ -36,6 +36,7 @@ spec:
           timeoutSeconds: 1
         ports:
         - containerPort: 8080
+          hostPort: 38080
           protocol: TCP
         - containerPort: 8443
           protocol: TCP
