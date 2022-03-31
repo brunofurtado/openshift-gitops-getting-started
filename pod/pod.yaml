@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/scc: restricted
+  labels:
+  name: petclinic-pod
+  namespace: spring-petclinic
+  uid: 2b2820e7-cea5-4598-b50f-cbeb851cff90
+spec:
+  restartPolicy: Never
+  selector:
+    matchLabels:
+      app: spring-petclinic
+  containers:
+      - name: spring-petclinic
+        imagePullPolicy: IfNotPresent
+        image: quay.io/siamaksade/spring-petclinic:latest
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 45
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          hostPort: 8778
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
