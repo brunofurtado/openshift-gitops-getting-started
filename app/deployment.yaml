@@ -20,6 +20,23 @@ spec:
       labels:
         app: spring-petclinic
     spec:
+      initContainers:
+      - name: wait-for-host-port
+        image: registry.access.redhat.com/ubi8/ubi:latest
+        imagePullPolicy: IfNotPresent
+        terminationMessagePolicy: FallbackToLogsOnError
+        command: ['/usr/bin/timeout', '30', '/bin/bash', '-c']
+        args:
+        - |
+          echo -n "Waiting for port :10259 and :10251 to be released."
+            while [ -n "$(ss -Htan '( sport = 10251 or sport = 10259 )')" ]; do
+            echo -n "."
+          sleep 1
+          done
+        resources:
+          requests:
+            memory: 50Mi
+            cpu: 15m
       containers:
       - name: spring-petclinic
         imagePullPolicy: Always
